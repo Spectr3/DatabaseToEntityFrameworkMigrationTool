@@ -5,7 +5,7 @@ namespace MigrationTool.Services;
 
 public class DatabaseService
     {
-        public DatabaseStructure GetDatabaseStructure(string connectionString, string schema)
+        public static DatabaseStructure GetDatabaseStructure(string connectionString, string schema)
         {
             DatabaseStructure databaseStructure = new DatabaseStructure();
             List<DatabaseElement> databaseElements = new List<DatabaseElement>();

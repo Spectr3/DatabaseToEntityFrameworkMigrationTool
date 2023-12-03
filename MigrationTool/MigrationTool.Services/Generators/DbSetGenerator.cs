@@ -5,7 +5,7 @@ namespace MigrationTool.Services;
 
 public class DbSetGenerator
 {
-    public void GenerateModelForTable(List<DatabaseElement> elements, string fileNamespace, string tableName, string outputDirectory)
+    public static void GenerateModelForTable(List<DatabaseElement> elements, string fileNamespace, string tableName, string outputDirectory)
     {
         var fileText = GenerateModelText(elements, fileNamespace, tableName);
 
@@ -19,7 +19,7 @@ public class DbSetGenerator
         File.WriteAllText(fileName, fileText);
     }
 
-    public string GenerateModelText(List<DatabaseElement> elements, string fileNamespace, string tableName)
+    private static string GenerateModelText(List<DatabaseElement> elements, string fileNamespace, string tableName)
     {
         StringBuilder fileText = new StringBuilder();
 
@@ -40,17 +40,17 @@ public class DbSetGenerator
         return fileText.ToString();
     }
 
-    private string GetMaxLengthAnnotation(DatabaseElement row)
+    private static string GetMaxLengthAnnotation(DatabaseElement row)
     {
         return "[MaxLength(" + row.MaxLength + ")]";
     }
 
-    private string GetColumnAnnotation(DatabaseElement row)
+    private static string GetColumnAnnotation(DatabaseElement row)
     {
         return "[Column(\"" + row.ColumnName + "\", TypeName = \"" + row.DataType + "\")]";
     }
 
-    private string GetPropertyForColumn(DatabaseElement row)
+    private static string GetPropertyForColumn(DatabaseElement row)
     {
         var cSharpDataType = TypeConvertor.GetCSharpType(row.DataType, row.IsNullable);
         return $"public {cSharpDataType} {row.ColumnName} {{ get; set; }}";

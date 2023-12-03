@@ -5,12 +5,20 @@ namespace MigrationTool.Services;
 
 public class ContextGenerator
 {
-    public void GenerateContextForDatabase(DatabaseStructure structure, string fileNamespace, string contextName)
+    public static void GenerateContextForDatabase(DatabaseStructure structure, string fileNamespace, string contextName, string outputDirectory)
     {
-        GetTextForContextFile(structure, fileNamespace, contextName);
+        var fileText = GetTextForContextFile(structure, fileNamespace, contextName);
+
+        if (!Directory.Exists(outputDirectory))
+        {
+            Directory.CreateDirectory(outputDirectory);
+        }
+
+        var fileName = Path.Combine(outputDirectory, $"{contextName}.cs");
+        File.WriteAllText(fileName, fileText);
     }
 
-    private void GetTextForContextFile(DatabaseStructure structure, string fileNamespace, string contextName)
+    private static string GetTextForContextFile(DatabaseStructure structure, string fileNamespace, string contextName)
     {
         StringBuilder fileText = new StringBuilder();
         
@@ -29,9 +37,11 @@ public class ContextGenerator
         fileText.AppendLine("\t\t}");
         fileText.AppendLine("\t}");
         fileText.AppendLine("}");
+
+        return fileText.ToString();
     }
 
-    private void AddDbSetsToFileText(StringBuilder fileText, DatabaseStructure structure)
+    private static void AddDbSetsToFileText(StringBuilder fileText, DatabaseStructure structure)
     {
         var tablesToAdd = GetUniqueByTableName(structure.Tables);
         foreach (var table in tablesToAdd)
@@ -40,7 +50,7 @@ public class ContextGenerator
         }
     }
 
-    private List<DatabaseElement> GetUniqueByTableName(List<DatabaseElement> tables)
+    private static List<DatabaseElement> GetUniqueByTableName(List<DatabaseElement> tables)
     {
         return tables
         .GroupBy(e => e.TableName)
