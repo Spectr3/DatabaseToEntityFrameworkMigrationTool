@@ -16,7 +16,7 @@ namespace MigrationTool
             string fileNamespace = "";
             string contextName = "";
 
-            EfCoreMigratorService.GenerateEfCoreFiles(connectionString, schema, contextName, fileNamespace, outputDirectory)
+            EfCoreMigratorService.GenerateEfCoreFiles(connectionString, schema, contextName, fileNamespace, outputDirectory);
        }
     }
 }
