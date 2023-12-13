@@ -1,4 +1,6 @@
-﻿namespace MigrationTool.Models;
+﻿using System.Data;
+
+namespace MigrationTool.Models;
 
 public class DatabaseElement
 {
@@ -7,7 +9,8 @@ public class DatabaseElement
     public string DataType { get; set; }
     public int? MaxLength { get; set; }
     public bool IsNullable { get; set; }
-    public string ForeignKeyConstraintName { get; set; }
-    public string ForeignKeyTableName { get; set; }
-    public string ForeignKeyColumnName { get; set; }
+    public string? ForeignKeyConstraintName { get; set; }
+    public string ForeignKeyTableName { get; set; } = "";
+    public string? ForeignKeyColumnName { get; set; }
+    public List<Constraint>? Constraints { get; set; } = null;
 }
