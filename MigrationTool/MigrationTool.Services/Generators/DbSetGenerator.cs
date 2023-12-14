@@ -25,14 +25,14 @@ public class DbSetGenerator
 
         fileText.AppendLine("using System.ComponentModel.DataAnnotations;\n\n");
         fileText.AppendLine("namespace " + fileNamespace + ".Models\n{\n");
-        fileText.AppendLine("public class " + tableName + "\n{\n");
+        fileText.AppendLine("\tpublic class " + tableName + "\n{\n");
 
         foreach (var row in elements)
         {
+            GetAnnotationsForProperty(fileText, row);
             fileText.AppendLine(GetColumnAnnotation(row));
             if (row.MaxLength.HasValue)
                 fileText.AppendLine(GetMaxLengthAnnotation(row));
-            fileText.AppendLine(GetPropertyForColumn(row));
         }
 
         fileText.AppendLine("}\n}\n");
@@ -40,19 +40,25 @@ public class DbSetGenerator
         return fileText.ToString();
     }
 
+    private static void GetAnnotationsForProperty(StringBuilder fileText, DatabaseElement row)
+    {
+        if (row.MaxLength.HasValue)
+        {
+            fileText.AppendLine($"\t\t[MaxLength({row.MaxLength})]");
+        }
+        foreach (var constraint in row.Constraints)
+        {
+            fileText.AppendLine($"\t\t{Constraint.GetAnnotationForConstraint(constraint.Type)}");
+        }
+    }
+
     private static string GetMaxLengthAnnotation(DatabaseElement row)
     {
-        return "[MaxLength(" + row.MaxLength + ")]";
+        return "\t\t[MaxLength(" + row.MaxLength + ")]";
     }
 
     private static string GetColumnAnnotation(DatabaseElement row)
     {
-        return "[Column(\"" + row.ColumnName + "\", TypeName = \"" + row.DataType + "\")]";
-    }
-
-    private static string GetPropertyForColumn(DatabaseElement row)
-    {
-        var cSharpDataType = TypeConvertor.GetCSharpType(row.DataType, row.IsNullable);
-        return $"public {cSharpDataType} {row.ColumnName} {{ get; set; }}";
-    }
+        return "\t\t[Column(\"" + row.ColumnName + "\", TypeName = \"" + row.DataType + "\")]";
+    }   
 }

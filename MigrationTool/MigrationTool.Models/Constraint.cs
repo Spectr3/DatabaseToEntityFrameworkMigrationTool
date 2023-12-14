@@ -21,13 +21,13 @@ public class Constraint
         };
     }
 
-    public static string GetAnnotationForConstraint(ConstraintType type)
+    public static string GetAnnotationTextForConstraint(ConstraintType type, string name, string propertyName, string propertyType)
     {
         return type switch
         {
             ConstraintType.PrimaryKey => "[Key]",
-            ConstraintType.ForeignKey => "[ForeignKey]",
-            ConstraintType.Index => "[Index]",
+            ConstraintType.ForeignKey => "[ForeignKey(\"" + propertyName + "\")]",
+            ConstraintType.Index => $"[Index(\"{name}\")]",
             ConstraintType.Unique => "[Unique]",
             ConstraintType.Check => "[Check]",
             ConstraintType.Trigger => "[Trigger]",
